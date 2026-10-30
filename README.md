@@ -2,17 +2,17 @@
 
 | ID | Requisito | O que precisa ser feito | Já está feito? |
 |---|---|---|---|
-| FR-01 | Gerenciar autores | Cadastrar autores. | |
-| FR-01 | Gerenciar autores | Visualizar a lista de autores. | |
+| FR-01 | Gerenciar autores | Cadastrar autores. |✅|
+| FR-01 | Gerenciar autores | Visualizar a lista de autores. |✅|
 | FR-01 | Gerenciar autores | Editar autores cadastrados. | |
 | FR-01 | Gerenciar autores | Excluir autores. | |
 | FR-01 | Gerenciar autores | Impedir a exclusão de autores associados a livros e informar quais são os livros. | |
-| FR-02 | Gerenciar livros | Cadastrar livros. | |
-| FR-02 | Gerenciar livros | Visualizar a lista de livros. | |
+| FR-02 | Gerenciar livros | Cadastrar livros. |✅|
+| FR-02 | Gerenciar livros | Visualizar a lista de livros. |✅|
 | FR-02 | Gerenciar livros | Editar livros cadastrados. | |
 | FR-02 | Gerenciar livros | Excluir livros. | |
-| FR-02 | Gerenciar livros | Selecionar autores existentes, sem precisar digitá-los novamente. | |
-| FR-02 | Gerenciar livros | Selecionar temas existentes ou criar novos temas durante o cadastro. | |
+| FR-02 | Gerenciar livros | Selecionar autores existentes, sem precisar digitá-los novamente. |✅|
+| FR-02 | Gerenciar livros | Selecionar temas existentes ou criar novos temas durante o cadastro. |✅|
 | FR-03 | Gerenciar leituras | Adicionar uma ou mais leituras a um livro. | |
 | FR-03 | Gerenciar leituras | Editar leituras cadastradas. | |
 | FR-03 | Gerenciar leituras | Excluir leituras. | |
