@@ -1,0 +1,9 @@
+# Editor and OS files
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# Browser-data exports and local copies
+reading-tracker-backup*.json
+*.bak

@@ -1,0 +1,812 @@
+
+/* ==============================
+   GENERAL
+============================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+section {
+    margin-top: 25px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+
+/* ==============================
+   HEADER
+============================== */
+
+#header-container {
+    width: 100%;
+}
+
+.main-header {
+    background-color: #1e3a5f;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.main-header nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 0;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.header-info h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header-info p {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.main-header nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.main-header nav a:hover {
+    background-color: white;
+    color: #1e3a5f;
+}
+
+/* Menu mobile: escondido em computadores */
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    margin: 0;
+    padding: 5px 10px;
+}
+
+
+/* ==============================
+   FOOTER
+============================== */
+
+.main-footer {
+    background-color: #142b47;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+
+/* ==============================
+   FORMS AND INPUTS
+============================== */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input,
+select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+}
+
+select[multiple] {
+    min-height: 90px;
+}
+
+textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    resize: vertical;
+}
+
+small {
+    color: #666;
+}
+
+.field-error {
+    display: block;
+    color: #c62828;
+    font-size: 13px;
+    min-height: 16px;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #eeeeee;
+    cursor: not-allowed;
+}
+
+
+/* ==============================
+   GENERAL BUTTONS
+============================== */
+
+button {
+    background-color: #1e3a5f;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #315d8d;
+}
+
+
+/* ==============================
+   EDIT AND DELETE BUTTONS
+============================== */
+
+/* Keep action buttons side by side */
+
+.author-actions,
+.book-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.author-actions button,
+.book-actions button {
+    margin: 0;
+}
+
+/* Edit - Yellow */
+
+.author-actions button:first-child,
+.book-actions button:first-child,
+#readings-list button:first-child {
+    background-color: #f1c40f;
+    color: #333;
+}
+
+.author-actions button:first-child:hover,
+.book-actions button:first-child:hover,
+#readings-list button:first-child:hover {
+    background-color: #d4ac0d;
+}
+
+/* Delete - Red */
+
+.author-actions button:last-child,
+.book-actions button:last-child,
+#readings-list button:last-child {
+    background-color: #b73535;
+    color: white;
+}
+
+.author-actions button:last-child:hover,
+.book-actions button:last-child:hover,
+#readings-list button:last-child:hover {
+    background-color: #922b2b;
+}
+
+/* Cancel - Gray */
+
+#cancel-edit,
+#cancel-reading-edit,
+#cancel-book-edit {
+    background-color: #777;
+}
+
+#cancel-edit[hidden],
+#cancel-reading-edit[hidden],
+#cancel-book-edit[hidden] {
+    display: none;
+}
+
+
+/* ==============================
+   SEARCH BOX
+============================== */
+
+.search-box {
+    position: relative;
+    width: 100%;
+    margin: 10px 0 15px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 12px 12px 38px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #1e3a5f;
+}
+
+
+/* ==============================
+   AUTHOR MANAGEMENT
+============================== */
+
+.author-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.author-item p {
+    margin: 5px 0;
+    color: #666;
+}
+
+
+/* ==============================
+   BOOK MANAGEMENT
+============================== */
+
+#books-list {
+    padding: 15px;
+    background-color: #f4f6f9;
+    border-radius: 5px;
+}
+
+.book-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.book-item p {
+    margin: 5px 0;
+    color: #666;
+}
+
+
+/* ==============================
+   THEME CREATION
+============================== */
+
+.new-theme-container {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.new-theme-container input {
+    flex: 1;
+    min-width: 0;
+}
+
+.new-theme-container button {
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+
+/* ==============================
+   FIRST READING
+============================== */
+
+#first-reading-section {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+#first-reading-section legend {
+    font-weight: bold;
+    padding: 0 8px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    width: auto;
+    margin: 0;
+}
+
+#first-reading-fields {
+    margin-top: 15px;
+}
+
+#first-reading-fields:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#first-reading-fields[hidden],
+#first-reading-section[hidden] {
+    display: none;
+}
+
+
+/* ==============================
+   READING MANAGEMENT
+============================== */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #1e3a5f;
+    color: white;
+}
+
+th button {
+    background: transparent;
+    margin: 0;
+    padding: 4px;
+    font-weight: bold;
+}
+
+td button {
+    margin: 3px;
+    padding: 8px;
+}
+
+/* Reset reading edit button */
+
+#cancel-reading-edit {
+    background-color: #777;
+}
+
+
+/* ==============================
+   HOME - DATA MANAGEMENT
+============================== */
+
+.library-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.library-summary p {
+    padding: 15px 20px;
+    background-color: #f4f6f9;
+    border-radius: 8px;
+}
+
+#reset-data-button {
+    background-color: #b73535;
+}
+
+#reset-data-button:hover {
+    background-color: #922b2b;
+}
+
+#reset-data-button:disabled,
+#backup-data-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#data-message {
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+
+/* ==============================
+   RESPONSIVE DESIGN
+============================== */
+
+/* Tablets and mobile devices */
+
+@media (max-width: 768px) {
+
+    .main-header {
+        flex-wrap: wrap;
+        padding: 20px;
+    }
+
+    /* Show hamburger only on small screens */
+
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Hide navigation until clicked */
+
+    .main-header nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        padding-top: 20px;
+    }
+
+    /* Show navigation when activated */
+
+    .main-header nav.active {
+        display: flex;
+    }
+
+    .main-header nav a {
+        display: block;
+    }
+}
+
+
+/* Small mobile screens */
+
+@media (max-width: 600px) {
+
+    main {
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .author-item,
+    .book-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .new-theme-container {
+        flex-direction: column;
+    }
+
+    .author-actions,
+    .book-actions {
+        flex-direction: row;
+    }
+}
+
+.readings-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Mantém o cabeçalho da tabela visível durante a rolagem */
+.readings-table-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #1e3a5f;
+    color: white;
+    z-index: 2;
+}
+
+.list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.success-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.success-content {
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    text-align: center;
+    width: 320px;
+    max-width: calc(100% - 40px);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    animation: appear 0.3s ease;
+}
+
+.success-icon {
+    width: 65px;
+    height: 65px;
+    background: #d4edda;
+    color: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 15px;
+}
+
+.success-content h2 {
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.success-content p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.success-content button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.success-content button:hover {
+    background: #218838;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* READING ACTION BUTTONS */
+
+.reading-actions {
+    white-space: nowrap;
+}
+
+.reading-actions button {
+    padding: 8px 14px;
+    margin: 3px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.reading-actions .edit-button {
+    background-color: #f1c40f;
+    color: #333;
+}
+
+.reading-actions .edit-button:hover {
+    background-color: #d4ac0d;
+    transform: translateY(-2px);
+}
+
+.reading-actions .delete-button {
+    background-color: #b73535;
+    color: white;
+}
+
+.reading-actions .delete-button:hover {
+    background-color: #922b2b;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   SUCCESS MODAL
+======================================== */
+
+.success-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.success-modal.active {
+    display: flex;
+}
+
+.success-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    width: 350px;
+    max-width: 90%;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    animation: appear 0.3s ease;
+}
+
+/* ========================================
+   DELETE CONFIRMATION MODAL
+======================================== */
+
+.delete-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.delete-modal.active {
+    display: flex;
+}
+
+.delete-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 380px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    animation: appear 0.3s ease;
+}
+
+.delete-icon {
+    width: 60px;
+    height: 60px;
+    background: #fde8e8;
+    color: #b73535;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    margin: 0 auto 15px;
+}
+
+.delete-content h2 {
+    margin-bottom: 10px;
+}
+
+.delete-content p {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.delete-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#cancel-delete {
+    background: #e5e7eb;
+    color: #333;
+}
+
+#cancel-delete:hover {
+    background: #d1d5db;
+}
+
+#confirm-delete {
+    background: #b73535;
+    color: white;
+}
+
+#confirm-delete:hover {
+    background: #922b2b;
+}
+
+#confirm-delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#delete-message {
+    white-space: pre-line;
+    line-height: 1.6;
+}

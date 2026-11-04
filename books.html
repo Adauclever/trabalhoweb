@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Books - Reading Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="header-container"></div>
+
+    <main>
+        <h2>Book Management</h2>
+        <p>Add and manage your books.</p>
+
+        <section>
+            <h3 id="book-form-heading">Add New Book</h3>
+
+            <form id="book-form" novalidate>
+                <input type="hidden" id="book-id">
+
+                <label for="title">Book Title</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                    placeholder="Enter the book title"
+                >
+                <small class="field-error"
+                       id="title-error"></small>
+
+                <label for="publicationYear">
+                    Original Publication Year
+                </label>
+                <input
+                    type="number"
+                    id="publicationYear"
+                    name="publicationYear"
+                    placeholder="e.g. 1899"
+                >
+                <small class="field-error"
+                       id="publicationYear-error"></small>
+
+                <label for="author-search">Authors</label>
+
+<div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+        type="text"
+        id="author-search"
+        placeholder="Search authors..."
+    >
+</div>
+
+<select id="authors" name="authors" multiple></select>
+
+<small>Select existing authors. Hold Ctrl to select multiple authors.</small>
+<small class="field-error" id="authors-error"></small>
+<small class="field-error" id="authors-error"></small>
+                <small class="field-error"
+                       id="authors-error"></small>
+
+                <label for="form">Form</label>
+                <select id="form" name="form">
+                    <option value="">Select a form</option>
+                    <option value="Novel">Novel</option>
+                    <option value="Novella">Novella</option>
+                    <option value="Short Story">Short Story</option>
+                    <option value="Short Story Collection">
+                        Short Story Collection
+                    </option>
+                    <option value="Play">Play</option>
+                    <option value="Essay">Essay</option>
+                    <option value="Treatise">Treatise</option>
+                    <option value="Diary">Diary</option>
+                    <option value="Graphic Novel">
+                        Graphic Novel
+                    </option>
+                </select>
+                <small class="field-error"
+                       id="form-error"></small>
+
+                <label for="mode">Mode of Expression</label>
+                <select id="mode" name="mode">
+                    <option value="">Select a mode</option>
+                    <option value="Prose">Prose</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Poetry">Poetry</option>
+                    <option value="Sequential Art">
+                        Sequential Art
+                    </option>
+                </select>
+                <small class="field-error"
+                       id="mode-error"></small>
+
+                <label for="content">Content</label>
+                <select id="content" name="content">
+                    <option value="">Select content</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-fiction">
+                        Non-fiction
+                    </option>
+                </select>
+                <small class="field-error"
+                       id="content-error"></small>
+
+                <label for="themes">Themes</label>
+                <select id="themes"
+                        name="themes"
+                        multiple>
+                </select>
+                <small>
+                    Hold Ctrl to select multiple themes.
+                </small>
+                <small class="field-error"
+                       id="themes-error"></small>
+
+                <label for="new-theme">
+                    Create New Theme
+                </label>
+
+                <div class="new-theme-container">
+                    <input
+                        type="text"
+                        id="new-theme"
+                        placeholder="Enter a new theme"
+                    >
+                    <button type="button"
+                            id="add-theme-button">
+                        Add Theme
+                    </button>
+                </div>
+                <small class="field-error"
+                       id="theme-error"></small>
+
+                <!-- FIRST READING -->
+
+                <fieldset id="first-reading-section">
+                    <legend>First Reading (Optional)</legend>
+
+                    <label class="checkbox-label"
+                           for="add-first-reading">
+                        <input
+                            type="checkbox"
+                            id="add-first-reading"
+                        >
+                        Add first reading
+                    </label>
+
+                    <div id="first-reading-fields" hidden>
+
+                        <label for="first-status">
+                            Status *
+                        </label>
+                        <select id="first-status">
+                            <option value="Want to read">
+                                Want to read
+                            </option>
+                            <option value="Reading">
+                                Reading
+                            </option>
+                            <option value="Paused">
+                                Paused
+                            </option>
+                            <option value="Read">
+                                Read
+                            </option>
+                            <option value="Abandoned">
+                                Abandoned
+                            </option>
+                        </select>
+                        <small class="field-error"
+                               id="first-status-error"></small>
+
+                        <label for="first-year">
+                            Year Read
+                        </label>
+                        <input
+                            type="number"
+                            id="first-year"
+                        >
+                        <small class="field-error"
+                               id="first-year-error"></small>
+
+                        <label for="first-grade">
+                            Grade
+                        </label>
+                        <input
+                            type="number"
+                            id="first-grade"
+                            min="0"
+                            max="10"
+                            step="0.5"
+                        >
+                        <small class="field-error"
+                               id="first-grade-error"></small>
+
+                        <label for="first-recommended">
+                            Recommended By
+                        </label>
+                        <input
+                            type="text"
+                            id="first-recommended"
+                        >
+
+                        <label for="first-priority">
+                            Priority
+                        </label>
+                        <select id="first-priority">
+                            <option value="">None</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                        <small class="field-error"
+                               id="first-priority-error"></small>
+
+                        <label for="first-notes">
+                            Notes
+                        </label>
+                        <textarea
+                            id="first-notes"
+                            rows="3"
+                        ></textarea>
+
+                    </div>
+                </fieldset>
+
+                <button type="submit" id="save-book">
+                    Save Book
+                </button>
+
+                <button
+                    type="button"
+                    id="cancel-book-edit"
+                    hidden
+                >
+                    Cancel Edit
+                </button>
+
+            </form>
+        </section>
+
+        <section>
+    <h3>Registered Books</h3>
+
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+            type="text"
+            id="book-search"
+            placeholder="Search by book title or author..."
+        >
+    </div>
+
+    <div class="list-container">
+        <div id="books-list">
+            <p>No books registered yet.</p>
+        </div>
+    </div>
+
+</section>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="delete-modal">
+
+    <div class="delete-content">
+
+        <div class="delete-icon">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+
+        <h2>Delete Book?</h2>
+
+        <p id="delete-message">
+            Are you sure you want to delete this book?
+        </p>
+
+        <div class="delete-actions">
+
+            <button type="button" id="cancel-delete">
+                Cancel
+            </button>
+
+            <button type="button" id="confirm-delete">
+                <i class="fa-solid fa-trash"></i>
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <div id="success-modal" class="success-modal">
+    <div class="success-content">
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <h2>Success!</h2>
+        <p id="success-message">Registration completed successfully!</p>
+
+        <button type="button" id="success-button">OK</button>
+    </div>
+</div>
+
+    <script src="js/components.js"></script>
+
+    <script type="module" src="js/books.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Reading Log - Reading Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+    <div id="header-container"></div>
+
+    <main>
+        <h2>Reading Management</h2>
+        <p>Track your reading progress.</p>
+
+        <section>
+            <h3 id="reading-form-heading">Add New Reading</h3>
+
+            <form id="reading-form" novalidate>
+
+                <input type="hidden" id="reading-id">
+
+                <label for="reading-book">Book</label>
+                <select id="reading-book">
+                    <option value="">Select a book</option>
+                </select>
+                <small class="field-error" id="book-error"></small>
+
+                <label for="reading-status">Status</label>
+                <select id="reading-status">
+                    <option value="Want to read">Want to read</option>
+                    <option value="Reading">Reading</option>
+                    <option value="Paused">Paused</option>
+                    <option value="Read">Read</option>
+                    <option value="Abandoned">Abandoned</option>
+                </select>
+
+                <small class="field-error" id="status-error"></small>
+
+                <label for="reading-year">Year Read</label>
+                <input type="number" id="reading-year">
+                <small class="field-error" id="year-error"></small>
+
+                <label for="reading-grade">Grade</label>
+                <input type="number" id="reading-grade"
+                       min="0" max="10" step="0.5">
+                <small class="field-error" id="grade-error"></small>
+
+                <label for="reading-recommended">
+                    Recommended By
+                </label>
+                <input type="text" id="reading-recommended">
+
+                <label for="reading-priority">Priority</label>
+                <select id="reading-priority">
+                    <option value="">None</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+
+                <small class="field-error" id="priority-error"></small>
+
+                <label for="reading-notes">Notes</label>
+                <textarea id="reading-notes" rows="4"></textarea>
+
+                <button type="submit">Save Reading</button>
+
+                <button type="button" id="cancel-reading-edit" hidden>
+                    Cancel Edit
+                </button>
+            </form>
+        </section>
+
+        <section>
+    <h3>Reading Log</h3>
+
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+            type="text"
+            id="reading-search"
+            placeholder="Search by book title or author..."
+        >
+    </div>
+
+    <div class="list-container">
+    <div class="table-wrapper">
+        <table id="readings-table">
+            <thead>
+                <tr>
+                    <th><button type="button" data-sort="title">Title</button></th>
+                    <th><button type="button" data-sort="authors">Authors</button></th>
+                    <th><button type="button" data-sort="status">Status</button></th>
+                    <th><button type="button" data-sort="yearRead">Year Read</button></th>
+                    <th><button type="button" data-sort="grade">Grade</button></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="readings-list"></tbody>
+        </table>
+    </div>
+    </div>
+</section>
+    </main>
+
+    <div id="success-modal" class="success-modal">
+    <div class="success-content">
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <h2>Success!</h2>
+        <p id="success-message">Registration completed successfully!</p>
+
+        <button type="button" id="success-button">OK</button>
+    </div>
+</div>
+
+    <script src="js/components.js"></script>
+
+    <script type="module" src="js/readings.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="header-container"></div>
+    <main>
+        <h2>Welcome to Reading Tracker!</h2>
+        <p>Organize your books, authors, and reading history in one place.</p>
+        <section>
+            <h3>My Library</h3>
+            <div class="library-summary">
+                <p><strong>Books:</strong> <span id="book-count">–</span></p>
+                <p><strong>Authors:</strong> <span id="author-count">–</span></p>
+                <p><strong>Readings:</strong> <span id="reading-count">–</span></p>
+            </div>
+        </section>
+        <section>
+            <h3>Data Management</h3>
+            <p>Reset Data restores the official dataset and replaces all changes saved in this browser.</p>
+            <button type="button" id="backup-data-button" disabled>Download Backup</button>
+            <button type="button" id="reset-data-button" disabled>Reset Data</button>
+            <p id="data-message" role="status" aria-live="polite"></p>
+        </section>
+    </main>
+    <script src="js/components.js"></script>
+    <script type="module" src="js/home.js"></script>
+</body>
+</html>
