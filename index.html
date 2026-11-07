@@ -1,33 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Reading Tracker</title>
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
+
+    <!-- CABEÇALHO DA PÁGINA -->
     <div id="header-container"></div>
-    <main>
-        <h2>Welcome to Reading Tracker!</h2>
-        <p>Organize your books, authors, and reading history in one place.</p>
-        <section>
-            <h3>My Library</h3>
-            <div class="library-summary">
-                <p><strong>Books:</strong> <span id="book-count">–</span></p>
-                <p><strong>Authors:</strong> <span id="author-count">–</span></p>
-                <p><strong>Readings:</strong> <span id="reading-count">–</span></p>
+
+    <main class="home-page">
+
+        <!-- SEÇÃO DE BOAS-VINDAS -->
+        <section class="home-hero">
+            <div class="hero-text">
+                <span class="hero-label">
+                    <i class="fa-solid fa-book-open"></i>
+                    YOUR PERSONAL LIBRARY
+                </span>
+
+                <h2>Welcome to Reading Tracker!</h2>
+
+                <p>
+                    Keep your books organized, follow your reading progress
+                    and manage your literary journey in one place.
+                </p>
+            </div>
+
+            <div class="hero-decoration">
+                <i class="fa-solid fa-book-open"></i>
             </div>
         </section>
-        <section>
-            <h3>Data Management</h3>
-            <p>Reset Data restores the official dataset and replaces all changes saved in this browser.</p>
-            <button type="button" id="backup-data-button" disabled>Download Backup</button>
-            <button type="button" id="reset-data-button" disabled>Reset Data</button>
-            <p id="data-message" role="status" aria-live="polite"></p>
+
+        <!-- RESUMO DA BIBLIOTECA -->
+        <section class="dashboard-section">
+            <div class="section-heading">
+                <div>
+                    <span class="section-subtitle">OVERVIEW</span>
+                    <h3>My Library</h3>
+                    <p>A summary of your personal collection.</p>
+                </div>
+            </div>
+
+            <div class="library-summary">
+
+                <!-- TOTAL DE LIVROS -->
+                <div class="summary-card books-card">
+                    <div class="summary-icon">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+
+                    <div class="summary-info">
+                        <span class="summary-label">Total Books</span>
+                        <strong id="book-count">–</strong>
+                        <span class="summary-description">Books in your library</span>
+                    </div>
+                </div>
+
+                <!-- TOTAL DE AUTORES -->
+                <div class="summary-card authors-card">
+                    <div class="summary-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div class="summary-info">
+                        <span class="summary-label">Total Authors</span>
+                        <strong id="author-count">–</strong>
+                        <span class="summary-description">Authors registered</span>
+                    </div>
+                </div>
+
+                <!-- TOTAL DE LEITURAS -->
+                <div class="summary-card readings-card">
+                    <div class="summary-icon">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </div>
+
+                    <div class="summary-info">
+                        <span class="summary-label">Total Readings</span>
+                        <strong id="reading-count">–</strong>
+                        <span class="summary-description">Reading records</span>
+                    </div>
+                </div>
+
+            </div>
         </section>
+
+        <!-- GERENCIAMENTO DOS DADOS -->
+        <section class="dashboard-section management-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-subtitle">BACKUP & RESTORE</span>
+                    <h3>Data Management</h3>
+                    <p>Manage and protect your Reading Tracker data.</p>
+                </div>
+
+                <div class="management-heading-icon">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+            </div>
+
+            <div class="management-content">
+
+                <div class="management-info">
+                    <h4>Keep your library safe</h4>
+
+                    <p>
+                        Download a backup of your current data or restore
+                        the official dataset. Restoring will replace all
+                        changes saved in this browser.
+                    </p>
+                </div>
+
+                <div class="management-buttons">
+
+                    <!-- BOTÃO PARA BAIXAR O BACKUP -->
+                    <button type="button"
+                            id="backup-data-button"
+                            class="backup-button"
+                            disabled>
+                        <i class="fa-solid fa-download"></i>
+                        Download Backup
+                    </button>
+
+                    <!-- BOTÃO PARA RESTAURAR OS DADOS -->
+                    <button type="button"
+                            id="reset-data-button"
+                            class="reset-button"
+                            disabled>
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Reset Data
+                    </button>
+
+                </div>
+
+            </div>
+
+            <p id="data-message" role="status" aria-live="polite"></p>
+
+        </section>
+
     </main>
+
+    <!-- MODAL DE CONFIRMAÇÃO DA RESTAURAÇÃO DOS DADOS -->
+    <div id="reset-modal" class="modal-overlay hidden">
+
+        <div class="modal-content">
+
+            <div class="modal-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <h2 class="modal-title">Reset Reading Tracker?</h2>
+
+            <p class="modal-message">
+                Are you sure you want to restore the initial data?
+                All your current books, authors, reading records,
+                and changes will be permanently deleted and replaced
+                with the original data.
+            </p>
+
+            <div class="modal-actions">
+
+                <!-- BOTÃO PARA CANCELAR A RESTAURAÇÃO -->
+                <button type="button"
+                        id="cancel-reset"
+                        class="btn-cancel">
+                    Cancel
+                </button>
+
+                <!-- BOTÃO PARA CONFIRMAR A RESTAURAÇÃO -->
+                <button type="button"
+                        id="confirm-reset"
+                        class="btn-reset">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Reset Data
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ARQUIVOS JAVASCRIPT -->
     <script src="js/components.js"></script>
     <script type="module" src="js/home.js"></script>
+
 </body>
 </html>

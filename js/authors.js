@@ -34,9 +34,8 @@ const confirmDeleteButton = document.getElementById("confirm-delete");
 let authorToDelete = null;
 
 
-// ========================================
-// CARREGAR PAÍSES
-// ========================================
+
+// CARREGA OS PAÍSES EM ORDEM ALFABETICA PARA FACILITAR A PESQUISA
 
 async function loadCountries() {
     const countries = await getCountries();
@@ -53,9 +52,7 @@ async function loadCountries() {
 }
 
 
-// ========================================
-// MENSAGENS DE ERRO
-// ========================================
+// MOSTRA UMA MENSAGEM DE ERRO
 
 function clearErrors() {
     document.querySelectorAll(".field-error").forEach(element => {
@@ -67,10 +64,11 @@ function showErrors(errors) {
     clearErrors();
 
     const fieldIds = {
-        name: "name-error",
-        birthDate: "birth-error",
-        deathDate: "death-error"
-    };
+    name: "name-error",
+    countryId: "country-error",
+    birthDate: "birth-error",
+    deathDate: "death-error"
+};
 
     errors.forEach(error => {
         const fieldId = fieldIds[error.field];
@@ -85,9 +83,7 @@ function showErrors(errors) {
 }
 
 
-// ========================================
-// LIMPAR FORMULÁRIO
-// ========================================
+// EXCLUI OS DADOS QUE ESTAVAM NO FORMULÁRIO
 
 function resetForm() {
     form.reset();
@@ -101,9 +97,8 @@ function resetForm() {
 }
 
 
-// ========================================
-// MENSAGEM DE SUCESSO
-// ========================================
+
+// EXIBE UMA MENSAGEM DE SUCESSO
 
 function showSuccess(message) {
     successMessage.textContent = message;
@@ -118,9 +113,8 @@ successButton.addEventListener("click", () => {
 });
 
 
-// ========================================
-// CONFIRMAÇÃO DE EXCLUSÃO
-// ========================================
+
+// CONFIRMA SE QUER EXCLUIR
 
 function showDeleteConfirmation(author) {
     authorToDelete = author;
@@ -139,9 +133,8 @@ function showDeleteConfirmation(author) {
 }
 
 
-// ========================================
-// MOSTRAR LIVROS ASSOCIADOS
-// ========================================
+
+// MOSTRA OS LIVROS ASSOCIADOS A ESSE AUTOR
 
 function showAssociatedBooks(books) {
     deleteTitle.textContent = "Cannot Delete Author";
@@ -154,16 +147,14 @@ function showAssociatedBooks(books) {
     // Esconde o botão de exclusão
     confirmDeleteButton.hidden = true;
 
-    // Altera o botão Cancel para Close
+    // Altera o botão "Cancel" para "Close"
     cancelDeleteButton.textContent = "Close";
 
     deleteModal.classList.add("active");
 }
 
 
-// ========================================
-// FECHAR MODAL DE EXCLUSÃO
-// ========================================
+// FECHA O MODAL DE EXCLUSÃO
 
 function closeDeleteConfirmation() {
     authorToDelete = null;
@@ -192,9 +183,7 @@ deleteModal.addEventListener("click", event => {
 });
 
 
-// ========================================
-// CONFIRMAR EXCLUSÃO
-// ========================================
+// CONFIRMA A EXCLUSÃO
 
 confirmDeleteButton.addEventListener("click", async () => {
     if (!authorToDelete) return;
@@ -218,7 +207,7 @@ confirmDeleteButton.addEventListener("click", async () => {
 
     } catch (error) {
 
-        // Verifica se existem livros associados
+        // Verifica se tem livros associados a esse autor 
         if (error.books?.length > 0) {
             showAssociatedBooks(error.books);
             return;
@@ -237,9 +226,7 @@ confirmDeleteButton.addEventListener("click", async () => {
 });
 
 
-// ========================================
-// EDITAR AUTOR
-// ========================================
+// EDITAR O AUTOR
 
 function editAuthor(author) {
     authorIdInput.value = author.id;
@@ -263,9 +250,7 @@ function editAuthor(author) {
 }
 
 
-// ========================================
-// EXIBIR AUTORES
-// ========================================
+// EXIBE A LISTA DOS AUTORES (EM ORDEM ALFABÉTICA)
 
 async function renderAuthors() {
     const authors = await getAuthors();
@@ -295,7 +280,7 @@ async function renderAuthors() {
         const item = document.createElement("div");
         item.className = "author-item";
 
-        // Informações do autor
+        // Info do autor
         const info = document.createElement("div");
 
         const name = document.createElement("strong");
@@ -316,7 +301,7 @@ async function renderAuthors() {
         const actions = document.createElement("div");
         actions.className = "author-actions";
 
-        // Botão Edit
+        // Botão "Edit"
         const editButton = document.createElement("button");
 
         editButton.type = "button";
@@ -329,7 +314,7 @@ async function renderAuthors() {
             editAuthor(author);
         });
 
-        // Botão Delete
+        // Botão "Delete"
         const deleteButton = document.createElement("button");
 
         deleteButton.type = "button";
@@ -351,16 +336,14 @@ async function renderAuthors() {
 }
 
 
-// ========================================
-// PESQUISAR AUTORES
-// ========================================
+
+// PESQUISA OS AUTORES
 
 authorSearch.addEventListener("input", renderAuthors);
 
 
-// ========================================
-// SALVAR AUTOR
-// ========================================
+
+// SALVA O AUTOR
 
 form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -419,16 +402,12 @@ form.addEventListener("submit", async event => {
 });
 
 
-// ========================================
-// CANCELAR EDIÇÃO
-// ========================================
+
+// CANCELAR A EDIÇÃO
 
 cancelButton.addEventListener("click", resetForm);
 
-
-// ========================================
-// INICIAR PÁGINA
-// ========================================
+// INICIA A PÁGINA
 
 async function start() {
     try {

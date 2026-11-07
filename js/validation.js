@@ -1,17 +1,22 @@
+// VALIDA OS DADOS DE UM LIVRO
 
 export function validateBook(book) {
     const errors = [];
     const currentYear = new Date().getFullYear();
 
-    if (typeof book.title !== "string" ||
-        book.title.trim() === "") {
+    // VERIFICA SE O TÍTULO FOI INFORMADO
+    if (
+        typeof book.title !== "string" ||
+        book.title.trim() === ""
+    ) {
         errors.push({
             field: "title",
             message: "Book title is required."
         });
     }
 
-    if (book.publicationYear != null) {
+    // VERIFICA O ANO DE PUBLICAÇÃO
+    if (book.publicationYear != null && book.publicationYear !== "") {
         if (
             !Number.isInteger(book.publicationYear) ||
             book.publicationYear === 0 ||
@@ -24,47 +29,77 @@ export function validateBook(book) {
         }
     }
 
+    // VERIFICA A FORMA DO LIVRO
     const validForms = [
-        "Novel", "Novella", "Short Story",
-        "Short Story Collection", "Play",
-        "Essay", "Treatise", "Diary",
+        "Novel",
+        "Novella",
+        "Short Story",
+        "Short Story Collection",
+        "Play",
+        "Essay",
+        "Treatise",
+        "Diary",
         "Graphic Novel"
     ];
 
-    const validModes = [
-        "Prose", "Drama", "Poetry", "Sequential Art"
-    ];
-
-    const validContents = ["Fiction", "Non-fiction"];
-
-    if (book.form != null && !validForms.includes(book.form)) {
+    if (
+        book.form != null &&
+        book.form !== "" &&
+        !validForms.includes(book.form)
+    ) {
         errors.push({
             field: "form",
             message: "Select a valid book form."
         });
     }
 
-    if (book.mode != null && !validModes.includes(book.mode)) {
+    // VERIFICA O MODO DO LIVRO
+    const validModes = [
+        "Prose",
+        "Drama",
+        "Poetry",
+        "Sequential Art"
+    ];
+
+    if (
+        book.mode != null &&
+        book.mode !== "" &&
+        !validModes.includes(book.mode)
+    ) {
         errors.push({
             field: "mode",
             message: "Select a valid mode."
         });
     }
 
-    if (book.content != null &&
-        !validContents.includes(book.content)) {
+    // VERIFICA O TIPO DE CONTEÚDO
+    const validContents = [
+        "Fiction",
+        "Non-fiction"
+    ];
+
+    if (
+        book.content != null &&
+        book.content !== "" &&
+        !validContents.includes(book.content)
+    ) {
         errors.push({
             field: "content",
             message: "Select a valid content type."
         });
     }
 
+    // VERIFICA AS SELEÇÕES DE AUTORES E TEMAS
     for (const field of ["authorIds", "themeIds"]) {
         const ids = book[field];
 
-        if (!Array.isArray(ids) ||
-            ids.some(id => !Number.isInteger(id) || id <= 0) ||
-            new Set(ids).size !== ids.length) {
+        if (
+            !Array.isArray(ids) ||
+            ids.some(id =>
+                !Number.isInteger(id) || id <= 0
+            ) ||
+            new Set(ids).size !== ids.length
+        ) {
             errors.push({
                 field,
                 message: `Invalid ${field} selection.`
@@ -76,43 +111,61 @@ export function validateBook(book) {
 }
 
 
+
+// VALIDA OS DADOS DE UM AUTOR
+
 export function validateAuthor(author) {
     const errors = [];
-
-    if (typeof author.name !== "string" ||
-        author.name.trim() === "") {
-        errors.push({
-            field: "name",
-            message: "Author name is required."
-        });
-    }
-
-    // Usa a data local, sem converter para UTC.
     const now = new Date();
+
     const today = [
         now.getFullYear(),
         String(now.getMonth() + 1).padStart(2, "0"),
         String(now.getDate()).padStart(2, "0")
     ].join("-");
 
+    // VERIFICA SE O NOME FOI INFORMADO
+    if (
+        typeof author.name !== "string" ||
+        author.name.trim() === ""
+    ) {
+        errors.push({
+            field: "name",
+            message: "Author name is required."
+        });
+    }
+
+    // VERIFICA SE A DATA É VÁLIDA
     function validDate(value) {
-        if (typeof value !== "string" ||
-            !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        if (
+            typeof value !== "string" ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(value)
+        ) {
             return false;
         }
 
-        const [year, month, day] = value.split("-").map(Number);
+        const [year, month, day] =
+            value.split("-").map(Number);
+
         const date = new Date(0);
         date.setFullYear(year, month - 1, day);
 
-        return date.getFullYear() === year &&
+        return (
+            date.getFullYear() === year &&
             date.getMonth() === month - 1 &&
-            date.getDate() === day;
+            date.getDate() === day
+        );
     }
 
-    if (author.birthDate != null) {
-        if (!validDate(author.birthDate) ||
-            author.birthDate > today) {
+    // VERIFICA A DATA DE NASCIMENTO
+    if (
+        author.birthDate != null &&
+        author.birthDate !== ""
+    ) {
+        if (
+            !validDate(author.birthDate) ||
+            author.birthDate > today
+        ) {
             errors.push({
                 field: "birthDate",
                 message: "Enter a valid birth date that is not in the future."
@@ -120,9 +173,15 @@ export function validateAuthor(author) {
         }
     }
 
-    if (author.deathDate != null) {
-        if (!validDate(author.deathDate) ||
-            author.deathDate > today) {
+    // VERIFICA A DATA DE FALECIMENTO
+    if (
+        author.deathDate != null &&
+        author.deathDate !== ""
+    ) {
+        if (
+            !validDate(author.deathDate) ||
+            author.deathDate > today
+        ) {
             errors.push({
                 field: "deathDate",
                 message: "Enter a valid death date that is not in the future."
@@ -130,6 +189,7 @@ export function validateAuthor(author) {
         }
     }
 
+    // VERIFICA A ORDEM CRONOLÓGICA DAS DATAS
     if (
         author.birthDate &&
         author.deathDate &&
@@ -143,9 +203,15 @@ export function validateAuthor(author) {
         });
     }
 
-    if (author.countryId != null &&
-        (!Number.isInteger(author.countryId) ||
-         author.countryId <= 0)) {
+    // VERIFICA O PAÍS SELECIONADO
+    if (
+        author.countryId != null &&
+        author.countryId !== "" &&
+        (
+            !Number.isInteger(author.countryId) ||
+            author.countryId <= 0
+        )
+    ) {
         errors.push({
             field: "countryId",
             message: "Select a valid country."
@@ -155,6 +221,9 @@ export function validateAuthor(author) {
     return errors;
 }
 
+
+
+// VALIDA OS DADOS DE UMA LEITURA
 
 export function validateReading(reading, book) {
     const errors = [];
@@ -169,16 +238,25 @@ export function validateReading(reading, book) {
     ];
 
     const validPriorities = [
-        "Low", "Medium", "High"
+        "Low",
+        "Medium",
+        "High"
     ];
 
-    if (!book || reading.bookId !== book.id) {
+    // VERIFICA SE O LIVRO SELECIONADO É VÁLIDO
+    if (
+        !book ||
+        !Number.isInteger(reading.bookId) ||
+        reading.bookId <= 0 ||
+        reading.bookId !== book.id
+    ) {
         errors.push({
             field: "bookId",
             message: "Select a valid book."
         });
     }
 
+    // VERIFICA O STATUS DA LEITURA
     if (!validStatuses.includes(reading.status)) {
         errors.push({
             field: "status",
@@ -190,17 +268,24 @@ export function validateReading(reading, book) {
         reading.status === "Read" ||
         reading.status === "Abandoned";
 
-    // YEAR READ
-
-    if (reading.status === "Read" &&
-        reading.yearRead == null) {
+    // VERIFICA O ANO DA LEITURA
+    if (
+        reading.status === "Read" &&
+        (
+            reading.yearRead == null ||
+            reading.yearRead === ""
+        )
+    ) {
         errors.push({
             field: "yearRead",
             message: "Year read is required for Read status."
         });
     }
 
-    if (reading.yearRead != null) {
+    if (
+        reading.yearRead != null &&
+        reading.yearRead !== ""
+    ) {
         if (!completedOrAbandoned) {
             errors.push({
                 field: "yearRead",
@@ -208,10 +293,12 @@ export function validateReading(reading, book) {
             });
         } else if (
             !Number.isInteger(reading.yearRead) ||
-            reading.yearRead <= 0 ||
+            reading.yearRead < 1 ||
             reading.yearRead > currentYear ||
-            (book?.publicationYear != null &&
-             reading.yearRead < book.publicationYear)
+            (
+                book?.publicationYear != null &&
+                reading.yearRead < book.publicationYear
+            )
         ) {
             errors.push({
                 field: "yearRead",
@@ -220,15 +307,18 @@ export function validateReading(reading, book) {
         }
     }
 
-    // GRADE
-
-    if (reading.grade != null) {
+    // VERIFICA A NOTA ATRIBUÍDA AO LIVRO
+    if (
+        reading.grade != null &&
+        reading.grade !== ""
+    ) {
         if (!completedOrAbandoned) {
             errors.push({
                 field: "grade",
                 message: "Grade is not allowed for this status."
             });
         } else if (
+            typeof reading.grade !== "number" ||
             !Number.isFinite(reading.grade) ||
             reading.grade < 0 ||
             reading.grade > 10 ||
@@ -241,9 +331,11 @@ export function validateReading(reading, book) {
         }
     }
 
-    // PRIORITY
-
-    if (reading.priority != null) {
+    // VERIFICA A PRIORIDADE DA LEITURA
+    if (
+        reading.priority != null &&
+        reading.priority !== ""
+    ) {
         if (
             reading.status !== "Want to read" ||
             !validPriorities.includes(reading.priority)
@@ -255,20 +347,27 @@ export function validateReading(reading, book) {
         }
     }
 
+    // VERIFICA QUEM RECOMENDOU O LIVRO
     if (
-    reading.status === "Read" &&
-    (reading.yearRead === null ||
-     reading.yearRead === undefined ||
-     reading.yearRead === "")
-) {
-    errors.push({
-        field: "yearRead",
-        message: "Year read is required when status is Read."
-    });
-}
+        reading.recommendedBy != null &&
+        typeof reading.recommendedBy !== "string"
+    ) {
+        errors.push({
+            field: "recommendedBy",
+            message: "Recommended by must be text."
+        });
+    }
+
+    // VERIFICA AS OBSERVAÇÕES DA LEITURA
+    if (
+        reading.notes != null &&
+        typeof reading.notes !== "string"
+    ) {
+        errors.push({
+            field: "notes",
+            message: "Notes must be text."
+        });
+    }
 
     return errors;
-
-
 }
-
