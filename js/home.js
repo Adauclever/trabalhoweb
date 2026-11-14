@@ -1,3 +1,4 @@
+import { MESSAGES } from "./messages.js";
 import {
     initializeStore, getBooks, getAuthors, getReadings,
     resetToSeed, getDataBackup
@@ -7,13 +8,10 @@ const message = document.getElementById("data-message");
 const resetButton = document.getElementById("reset-data-button");
 const backupButton = document.getElementById("backup-data-button");
 
+// Modal elements
 const resetModal = document.getElementById("reset-modal");
 const cancelResetButton = document.getElementById("cancel-reset");
 const confirmResetButton = document.getElementById("confirm-reset");
-
-
-
-// ATUALIZA O RESUMO DOS DADOS CADASTRADOS
 
 async function updateSummary() {
     const [books, authors, readings] = await Promise.all([
@@ -25,33 +23,25 @@ async function updateSummary() {
     document.getElementById("reading-count").textContent = readings.length;
 }
 
-
-
-// ABRE O MODAL DE CONFIRMAÇÃO DA RESTAURAÇÃO DOS DADOS
-
+// Open confirmation modal
 resetButton.addEventListener("click", () => {
     message.textContent = "";
     resetModal.classList.remove("hidden");
 });
 
-
-
-// FECHA O MODAL DE CONFIRMAÇÃO
-
+// Close modal when clicking Cancel
 cancelResetButton.addEventListener("click", () => {
     resetModal.classList.add("hidden");
 });
 
-resetModal.addEventListener("click", event => {
+// Close modal when clicking outside the box
+resetModal.addEventListener("click", (event) => {
     if (event.target === resetModal) {
         resetModal.classList.add("hidden");
     }
 });
 
-
-
-// RESTAURA OS DADOS ORIGINAIS
-
+// Confirm reset
 confirmResetButton.addEventListener("click", async () => {
     resetButton.disabled = true;
     confirmResetButton.disabled = true;
@@ -60,11 +50,11 @@ confirmResetButton.addEventListener("click", async () => {
         await resetToSeed();
         await updateSummary();
 
-        message.textContent = "Official seed data restored successfully.";
+        message.textContent = MESSAGES.ui.seedRestored;
         resetModal.classList.add("hidden");
 
     } catch (error) {
-        message.textContent = error.message || "Could not restore data.";
+        message.textContent = error.message || MESSAGES.ui.restoreFailed;
 
     } finally {
         resetButton.disabled = false;
@@ -72,10 +62,7 @@ confirmResetButton.addEventListener("click", async () => {
     }
 });
 
-
-
-// FAZ O DOWNLOAD DO BACKUP DOS DADOS
-
+// Download backup
 backupButton.addEventListener("click", async () => {
     try {
         const json = await getDataBackup();
@@ -99,10 +86,7 @@ backupButton.addEventListener("click", async () => {
     }
 });
 
-
-
-// INICIALIZA A PÁGINA
-
+// Initialize application
 async function start() {
     resetButton.disabled = true;
     backupButton.disabled = true;
@@ -125,24 +109,12 @@ async function start() {
     }
 }
 
+// Navigation menu
+const menuToggle = document.getElementById("menu-toggle");
+const navbar = document.getElementById("navbar");
 
-
-// CONTROLA O MENU DE NAVEGAÇÃO
-
-document.addEventListener("click", event => {
-    const menuToggle = event.target.closest("#menu-toggle");
-
-    if (menuToggle) {
-        const navbar = document.getElementById("navbar");
-
-        if (navbar) {
-            navbar.classList.toggle("active");
-        }
-    }
+menuToggle.addEventListener("click", () => {
+    navbar.classList.toggle("active");
 });
-
-
-
-// INICIA A PÁGINA
 
 start();

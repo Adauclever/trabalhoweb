@@ -1,3 +1,4 @@
+import { MESSAGES } from "./messages.js";
 import {
     validateAuthor,
     validateBook,
@@ -9,11 +10,12 @@ import { loadSeedData } from "./seed.js";
 const STORAGE_KEY = "readingTrackerData";
 
 
+// ========================================
+// INICIALIZAÇÃO E RESTAURAÇÃO DOS DADOS
+// ========================================
 
-// INICIALIZA OS DADOS DO SISTEMA
-
+// Carrega os dados iniciais somente no primeiro acesso.
 export async function initializeStore() {
-    // Carrega os dados iniciais somente no primeiro acesso.
     if (localStorage.getItem(STORAGE_KEY) !== null) {
         return { loadedFromSeed: false };
     }
@@ -29,8 +31,7 @@ export async function initializeStore() {
 }
 
 
-// RESTAURA OS DADOS ORIGINAIS
-
+// Restaura os dados oficiais.
 export async function resetToSeed() {
     const data = await loadSeedData();
 
@@ -43,14 +44,13 @@ export async function resetToSeed() {
 }
 
 
-// CRIA UM BACKUP DOS DADOS ATUAIS
-
+// Cria um backup dos dados atuais.
 export async function getDataBackup() {
     const data = getData();
 
     if (!data) {
         throw new Error(
-            "No application data is available to back up."
+            MESSAGES.store.noDataToBackup
         );
     }
 
@@ -58,8 +58,9 @@ export async function getDataBackup() {
 }
 
 
-
+// ========================================
 // ACESSO AOS DADOS
+// ========================================
 
 function getData() {
     const savedData = localStorage.getItem(STORAGE_KEY);
@@ -68,8 +69,9 @@ function getData() {
 }
 
 
-
-// TRATA OS ERROS DE VALIDAÇÃO
+// ========================================
+// TRATAMENTO DE ERROS
+// ========================================
 
 function throwValidationErrors(errors) {
     if (errors.length > 0) {
@@ -82,8 +84,9 @@ function throwValidationErrors(errors) {
 }
 
 
-
-// VALIDA AS REFERÊNCIAS DE AUTORES E TEMAS DOS LIVROS
+// ========================================
+// VALIDAR REFERÊNCIAS DE LIVROS
+// ========================================
 
 function validateBookReferences(book, data) {
     const errors = [];
@@ -97,7 +100,7 @@ function validateBookReferences(book, data) {
             ) {
                 errors.push({
                     field: "authorIds",
-                    message: "Select existing authors."
+                    message: MESSAGES.store.selectExistingAuthors
                 });
 
                 break;
@@ -114,7 +117,7 @@ function validateBookReferences(book, data) {
             ) {
                 errors.push({
                     field: "themeIds",
-                    message: "Select existing themes."
+                    message: MESSAGES.store.selectExistingThemes
                 });
 
                 break;
@@ -126,8 +129,9 @@ function validateBookReferences(book, data) {
 }
 
 
-
+// ========================================
 // LIVROS
+// ========================================
 
 export async function getBooks() {
     const data = getData();
@@ -135,8 +139,6 @@ export async function getBooks() {
     return data.books;
 }
 
-
-// SALVA UM NOVO LIVRO
 
 export async function saveBook(book) {
     const data = getData();
@@ -167,8 +169,9 @@ export async function saveBook(book) {
 }
 
 
-
+// ========================================
 // AUTORES
+// ========================================
 
 export async function getAuthors() {
     const data = getData();
@@ -177,7 +180,9 @@ export async function getAuthors() {
 }
 
 
+// ========================================
 // PAÍSES
+// ========================================
 
 export async function getCountries() {
     const data = getData();
@@ -186,8 +191,9 @@ export async function getCountries() {
 }
 
 
-
-// SALVA OU ATUALIZA UM AUTOR
+// ========================================
+// SALVAR AUTOR
+// ========================================
 
 export async function saveAuthor(author) {
     const data = getData();
@@ -212,11 +218,10 @@ export async function saveAuthor(author) {
     ) {
         throwValidationErrors([{
             field: "countryId",
-            message: "Select an existing country."
+            message: MESSAGES.store.selectExistingCountry
         }]);
     }
 
-    // Verifica se já existe um autor com o mesmo nome.
     const duplicate = data.authors.some(item =>
         item.name.trim().toLocaleLowerCase("en-US") ===
             cleanAuthor.name.toLocaleLowerCase("en-US") &&
@@ -226,15 +231,14 @@ export async function saveAuthor(author) {
     if (duplicate) {
         throw {
             status: 409,
-            message: "Author name already exists.",
+            message: MESSAGES.store.authorExists,
             errors: [{
                 field: "name",
-                message: "Author name already exists."
+                message: MESSAGES.store.authorExists
             }]
         };
     }
 
-    // Cadastra um novo autor.
     if (cleanAuthor.id == null) {
         const nextId = data.authors.reduce(
             (max, item) => Math.max(max, Number(item.id)),
@@ -246,7 +250,6 @@ export async function saveAuthor(author) {
         data.authors.push(cleanAuthor);
 
     } else {
-        // Atualiza os dados de um autor existente.
         const index = data.authors.findIndex(
             item =>
                 Number(item.id) === Number(cleanAuthor.id)
@@ -255,7 +258,7 @@ export async function saveAuthor(author) {
         if (index === -1) {
             throw {
                 status: 404,
-                message: "Author not found.",
+                message: MESSAGES.store.authorNotFound,
                 errors: []
             };
         }
@@ -272,8 +275,9 @@ export async function saveAuthor(author) {
 }
 
 
-
-// EXCLUI AUTOR
+// ========================================
+// EXCLUIR AUTOR
+// ========================================
 
 export async function deleteAuthor(id) {
     const data = getData();
@@ -286,10 +290,10 @@ export async function deleteAuthor(id) {
     );
 
     if (!authorExists) {
-        throw new Error("Author not found.");
+        throw { status: 404, message: MESSAGES.store.authorNotFound, errors: [] };
     }
 
-    // Procura os livros associados ao autor.
+    // Procura todos os livros associados ao autor.
     const associatedBooks = data.books.filter(book =>
         (book.authorIds ?? []).some(
             id => Number(id) === authorId
@@ -298,15 +302,13 @@ export async function deleteAuthor(id) {
 
     // Impede a exclusão caso existam livros associados.
     if (associatedBooks.length > 0) {
-        const error = new Error(
-            "This author cannot be deleted because they are associated with books."
-        );
+        const titles = associatedBooks.map(book => book.title).join(", ");
 
-        error.books = associatedBooks.map(
-            book => book.title
-        );
-
-        throw error;
+        throw {
+            status: 409,
+            message: MESSAGES.store.authorLinked(associatedBooks.length, titles),
+            errors: []
+        };
     }
 
     // Remove o autor.
@@ -323,15 +325,18 @@ export async function deleteAuthor(id) {
 }
 
 
-
+// ========================================
 // LEITURAS
+// ========================================
 
 export async function getReadings() {
     return getData().readings;
 }
 
 
-// SALVA OU ATUALIZA UMA LEITURA
+// ========================================
+// SALVAR LEITURA
+// ========================================
 
 export async function saveReading(reading) {
     const data = getData();
@@ -344,7 +349,6 @@ export async function saveReading(reading) {
         validateReading(reading, book)
     );
 
-    // Cadastra uma nova leitura.
     if (reading.id == null) {
         const nextId = data.readings.reduce(
             (max, item) => Math.max(max, Number(item.id)),
@@ -366,7 +370,6 @@ export async function saveReading(reading) {
         return newReading;
     }
 
-    // Atualiza uma leitura existente.
     const index = data.readings.findIndex(
         item => Number(item.id) === Number(reading.id)
     );
@@ -374,7 +377,7 @@ export async function saveReading(reading) {
     if (index === -1) {
         throw {
             status: 404,
-            message: "Reading not found.",
+            message: MESSAGES.store.readingNotFound,
             errors: []
         };
     }
@@ -394,8 +397,9 @@ export async function saveReading(reading) {
 }
 
 
-
-// EXCLUI UMA LEITURA
+// ========================================
+// EXCLUIR LEITURA
+// ========================================
 
 export async function deleteReading(id) {
     const data = getData();
@@ -407,7 +411,7 @@ export async function deleteReading(id) {
     );
 
     if (!exists) {
-        throw new Error("Reading not found.");
+        throw { status: 404, message: MESSAGES.store.readingNotFound, errors: [] };
     }
 
     data.readings = data.readings.filter(
@@ -423,8 +427,9 @@ export async function deleteReading(id) {
 }
 
 
-
-// ATUALIZA UM LIVRO
+// ========================================
+// ATUALIZAR LIVRO
+// ========================================
 
 export async function updateBook(id, updatedBook) {
     const data = getData();
@@ -438,7 +443,7 @@ export async function updateBook(id, updatedBook) {
     if (index === -1) {
         throw {
             status: 404,
-            message: "Book not found.",
+            message: MESSAGES.store.bookNotFound,
             errors: []
         };
     }
@@ -453,7 +458,7 @@ export async function updateBook(id, updatedBook) {
         ...validateBookReferences(book, data)
     ];
 
-    // Verifica se a edição tornaria alguma leitura inválida.
+    // Verifica se a edição tornaria leituras inválidas.
     const linkedReadings = data.readings.filter(
         reading => Number(reading.bookId) === bookId
     );
@@ -467,9 +472,7 @@ export async function updateBook(id, updatedBook) {
         if (readingErrors.length > 0) {
             errors.push({
                 field: "publicationYear",
-                message:
-                    "This change conflicts with an existing reading. " +
-                    "Check its year and the book's publication year."
+                message: MESSAGES.store.readingConflict
             });
 
             break;
@@ -489,8 +492,9 @@ export async function updateBook(id, updatedBook) {
 }
 
 
-
-// EXCLUI UM LIVRO E SUAS LEITURAS ASSOCIADAS
+// ========================================
+// EXCLUIR LIVRO
+// ========================================
 
 export async function deleteBook(id) {
     const data = getData();
@@ -503,10 +507,10 @@ export async function deleteBook(id) {
     );
 
     if (!exists) {
-        throw new Error("Book not found.");
+        throw { status: 404, message: MESSAGES.store.bookNotFound, errors: [] };
     }
 
-    // Conta as leituras associadas ao livro.
+    // Conta as leituras associadas.
     const readingCount = data.readings.filter(
         reading => Number(reading.bookId) === bookId
     ).length;
@@ -530,15 +534,18 @@ export async function deleteBook(id) {
 }
 
 
-
+// ========================================
 // TEMAS
+// ========================================
 
 export async function getThemes() {
     return getData().themes;
 }
 
 
-// CRIA UM NOVO TEMA
+// ========================================
+// CRIAR TEMA
+// ========================================
 
 export async function saveTheme(name) {
     const data = getData();
@@ -551,12 +558,12 @@ export async function saveTheme(name) {
             message: "Validation failed",
             errors: [{
                 field: "name",
-                message: "Theme name is required."
+                message: MESSAGES.store.themeRequired
             }]
         };
     }
 
-    // Impede o cadastro de temas duplicados.
+    // Impede nomes duplicados.
     const duplicate = data.themes.find(theme =>
         theme.name.trim().toLocaleLowerCase("en-US") ===
         cleanName.toLocaleLowerCase("en-US")
@@ -565,15 +572,15 @@ export async function saveTheme(name) {
     if (duplicate) {
         throw {
             status: 409,
-            message: "Theme already exists.",
+            message: MESSAGES.store.themeExistsShort,
             errors: [{
                 field: "name",
-                message: "A theme with this name already exists."
+                message: MESSAGES.store.themeExists
             }]
         };
     }
 
-    // Gera o próximo ID disponível.
+    // Gera o próximo ID.
     const nextId = data.themes.reduce(
         (max, theme) => Math.max(max, Number(theme.id)),
         0
@@ -595,13 +602,14 @@ export async function saveTheme(name) {
 }
 
 
-
-// CRIA UM LIVRO COM SUA PRIMEIRA LEITURA
+// ========================================
+// CRIAR LIVRO COM PRIMEIRA LEITURA
+// ========================================
 
 export async function createBookWithReading(book, firstReading) {
     const data = getData();
 
-    // Valida os dados do livro.
+    // 1. Valida o livro.
     const bookErrors = [
         ...validateBook(book),
         ...validateBookReferences(book, data)
@@ -615,7 +623,7 @@ export async function createBookWithReading(book, firstReading) {
         };
     }
 
-    // Confere se os autores e temas selecionados existem.
+    // 2. Confere autores e temas existentes.
     const validAuthors = (book.authorIds ?? []).every(id =>
         data.authors.some(
             author => Number(author.id) === Number(id)
@@ -631,12 +639,12 @@ export async function createBookWithReading(book, firstReading) {
     if (!validAuthors || !validThemes) {
         throw {
             status: 400,
-            message: "Invalid author or theme selection.",
+            message: MESSAGES.store.invalidAuthorOrTheme,
             errors: []
         };
     }
 
-    // Calcula o próximo ID do livro.
+    // 3. Calcula o próximo ID do livro.
     const nextBookId = data.books.reduce(
         (max, item) => Math.max(max, Number(item.id)),
         0
@@ -649,7 +657,7 @@ export async function createBookWithReading(book, firstReading) {
 
     let newReading = null;
 
-    // Prepara a primeira leitura, quando solicitada.
+    // 4. Prepara a primeira leitura, quando solicitada.
     if (firstReading !== null) {
         const nextReadingId = data.readings.reduce(
             (max, item) => Math.max(max, Number(item.id)),
@@ -662,7 +670,7 @@ export async function createBookWithReading(book, firstReading) {
             bookId: nextBookId
         };
 
-        // Valida a leitura antes de salvar os dados.
+        // 5. Valida a leitura antes de salvar.
         const readingErrors = validateReading(
             newReading,
             newBook
@@ -677,7 +685,7 @@ export async function createBookWithReading(book, firstReading) {
         }
     }
 
-    // Salva o livro e a primeira leitura.
+    // 6. Salva os registros.
     data.books.push(newBook);
 
     if (newReading !== null) {

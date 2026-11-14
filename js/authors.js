@@ -1,3 +1,4 @@
+import { MESSAGES } from "./messages.js";
 import {
     initializeStore,
     getAuthors,
@@ -34,14 +35,15 @@ const confirmDeleteButton = document.getElementById("confirm-delete");
 let authorToDelete = null;
 
 
-
-// CARREGA OS PAÍSES EM ORDEM ALFABETICA PARA FACILITAR A PESQUISA
+// ========================================
+// CARREGAR PAÍSES
+// ========================================
 
 async function loadCountries() {
     const countries = await getCountries();
 
     countrySelect.replaceChildren(
-        new Option("Unknown", "")
+        new Option(MESSAGES.ui.unknown, "")
     );
 
     countries.forEach(country => {
@@ -52,7 +54,9 @@ async function loadCountries() {
 }
 
 
-// MOSTRA UMA MENSAGEM DE ERRO
+// ========================================
+// MENSAGENS DE ERRO
+// ========================================
 
 function clearErrors() {
     document.querySelectorAll(".field-error").forEach(element => {
@@ -83,7 +87,9 @@ function showErrors(errors) {
 }
 
 
-// EXCLUI OS DADOS QUE ESTAVAM NO FORMULÁRIO
+// ========================================
+// LIMPAR FORMULÁRIO
+// ========================================
 
 function resetForm() {
     form.reset();
@@ -97,24 +103,24 @@ function resetForm() {
 }
 
 
-
-// EXIBE UMA MENSAGEM DE SUCESSO
+// ========================================
+// MENSAGEM DE SUCESSO
+// ========================================
 
 function showSuccess(message) {
     successMessage.textContent = message;
 
-    successModal.style.display = "flex";
     successModal.classList.add("active");
 }
 
 successButton.addEventListener("click", () => {
     successModal.classList.remove("active");
-    successModal.style.display = "none";
 });
 
 
-
-// CONFIRMA SE QUER EXCLUIR
+// ========================================
+// CONFIRMAÇÃO DE EXCLUSÃO
+// ========================================
 
 function showDeleteConfirmation(author) {
     authorToDelete = author;
@@ -122,7 +128,7 @@ function showDeleteConfirmation(author) {
     deleteTitle.textContent = "Delete Author?";
 
     deleteMessage.textContent =
-        `Are you sure you want to delete "${author.name}"? This action cannot be undone.`;
+        MESSAGES.ui.confirmDeleteAuthor(author.name);
 
     confirmDeleteButton.hidden = false;
     confirmDeleteButton.disabled = false;
@@ -133,28 +139,27 @@ function showDeleteConfirmation(author) {
 }
 
 
+// ========================================
+// MOSTRAR LIVROS ASSOCIADOS
+// ========================================
 
-// MOSTRA OS LIVROS ASSOCIADOS A ESSE AUTOR
-
-function showAssociatedBooks(books) {
-    deleteTitle.textContent = "Cannot Delete Author";
+function showAssociatedBooks(message) {
+    deleteTitle.textContent = MESSAGES.ui.cannotDeleteAuthor;
 
     deleteMessage.textContent =
-        "This author cannot be deleted because they are associated with the following books:\n\n" +
-        books.map(title => `• ${title}`).join("\n") +
-        "\n\nRemove this author from these books before attempting to delete them.";
+        message + "\n\n" + MESSAGES.ui.removeAuthorFirst;
 
-    // Esconde o botão de exclusão
+    // Hide the delete button; Cancel becomes Close
     confirmDeleteButton.hidden = true;
-
-    // Altera o botão "Cancel" para "Close"
     cancelDeleteButton.textContent = "Close";
 
     deleteModal.classList.add("active");
 }
 
 
-// FECHA O MODAL DE EXCLUSÃO
+// ========================================
+// FECHAR MODAL DE EXCLUSÃO
+// ========================================
 
 function closeDeleteConfirmation() {
     authorToDelete = null;
@@ -183,7 +188,9 @@ deleteModal.addEventListener("click", event => {
 });
 
 
-// CONFIRMA A EXCLUSÃO
+// ========================================
+// CONFIRMAR EXCLUSÃO
+// ========================================
 
 confirmDeleteButton.addEventListener("click", async () => {
     if (!authorToDelete) return;
@@ -203,13 +210,13 @@ confirmDeleteButton.addEventListener("click", async () => {
 
         await renderAuthors();
 
-        showSuccess("Author deleted successfully!");
+        showSuccess(MESSAGES.ui.authorDeleted);
 
     } catch (error) {
 
-        // Verifica se tem livros associados a esse autor 
-        if (error.books?.length > 0) {
-            showAssociatedBooks(error.books);
+        // Verifica se existem livros associados
+        if (error.status === 409) {
+            showAssociatedBooks(error.message);
             return;
         }
 
@@ -217,7 +224,7 @@ confirmDeleteButton.addEventListener("click", async () => {
 
         alert(
             error.message ||
-            "Could not delete author."
+            MESSAGES.ui.authorDeleteFailed
         );
 
     } finally {
@@ -226,7 +233,9 @@ confirmDeleteButton.addEventListener("click", async () => {
 });
 
 
-// EDITAR O AUTOR
+// ========================================
+// EDITAR AUTOR
+// ========================================
 
 function editAuthor(author) {
     authorIdInput.value = author.id;
@@ -250,7 +259,9 @@ function editAuthor(author) {
 }
 
 
-// EXIBE A LISTA DOS AUTORES (EM ORDEM ALFABÉTICA)
+// ========================================
+// EXIBIR AUTORES
+// ========================================
 
 async function renderAuthors() {
     const authors = await getAuthors();
@@ -268,8 +279,8 @@ async function renderAuthors() {
         const message = document.createElement("p");
 
         message.textContent = search
-            ? "No authors found."
-            : "No authors registered yet.";
+            ? MESSAGES.ui.authorsNotFound
+            : MESSAGES.ui.authorsEmpty;
 
         authorsList.appendChild(message);
 
@@ -280,7 +291,7 @@ async function renderAuthors() {
         const item = document.createElement("div");
         item.className = "author-item";
 
-        // Info do autor
+        // Informações do autor
         const info = document.createElement("div");
 
         const name = document.createElement("strong");
@@ -293,7 +304,7 @@ async function renderAuthors() {
         );
 
         nationality.textContent =
-            country ? country.name : "Unknown";
+            country ? country.name : MESSAGES.ui.unknown;
 
         info.append(name, nationality);
 
@@ -301,7 +312,7 @@ async function renderAuthors() {
         const actions = document.createElement("div");
         actions.className = "author-actions";
 
-        // Botão "Edit"
+        // Botão Edit
         const editButton = document.createElement("button");
 
         editButton.type = "button";
@@ -314,7 +325,7 @@ async function renderAuthors() {
             editAuthor(author);
         });
 
-        // Botão "Delete"
+        // Botão Delete
         const deleteButton = document.createElement("button");
 
         deleteButton.type = "button";
@@ -336,14 +347,16 @@ async function renderAuthors() {
 }
 
 
-
-// PESQUISA OS AUTORES
+// ========================================
+// PESQUISAR AUTORES
+// ========================================
 
 authorSearch.addEventListener("input", renderAuthors);
 
 
-
-// SALVA O AUTOR
+// ========================================
+// SALVAR AUTOR
+// ========================================
 
 form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -384,9 +397,9 @@ form.addEventListener("submit", async event => {
         await renderAuthors();
 
         if (isEditing) {
-            showSuccess("Author updated successfully!");
+            showSuccess(MESSAGES.ui.authorUpdated);
         } else {
-            showSuccess("Author registered successfully!");
+            showSuccess(MESSAGES.ui.authorSaved);
         }
 
     } catch (error) {
@@ -395,19 +408,23 @@ form.addEventListener("submit", async event => {
         } else {
             alert(
                 error.message ||
-                "Could not save author."
+                MESSAGES.ui.authorSaveFailed
             );
         }
     }
 });
 
 
-
-// CANCELAR A EDIÇÃO
+// ========================================
+// CANCELAR EDIÇÃO
+// ========================================
 
 cancelButton.addEventListener("click", resetForm);
 
-// INICIA A PÁGINA
+
+// ========================================
+// INICIAR PÁGINA
+// ========================================
 
 async function start() {
     try {
@@ -420,7 +437,7 @@ async function start() {
     } catch (error) {
         console.error("Could not initialize Authors:", error);
 
-        alert("Could not load authors.");
+        alert(MESSAGES.ui.authorsLoadFailed);
     }
 }
 

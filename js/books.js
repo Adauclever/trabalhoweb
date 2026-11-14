@@ -1,3 +1,4 @@
+import { MESSAGES } from "./messages.js";
 import {
     initializeStore,
     getBooks,
@@ -11,6 +12,10 @@ import {
 } from "./store.js";
 
 import { validateBook } from "./validation.js";
+
+// ========================================
+// ELEMENTOS DO FORMULÁRIO
+// ========================================
 
 const form = document.getElementById("book-form");
 const booksList = document.getElementById("books-list");
@@ -28,35 +33,165 @@ const formSelect = document.getElementById("form");
 const modeSelect = document.getElementById("mode");
 const contentSelect = document.getElementById("content");
 
-const cancelButton = document.getElementById("cancel-book-edit");
-const formHeading = document.getElementById("book-form-heading");
+const cancelButton =
+    document.getElementById("cancel-book-edit");
 
-const successModal = document.getElementById("success-modal");
-const successMessage = document.getElementById("success-message");
-const successButton = document.getElementById("success-button");
+const formHeading =
+    document.getElementById("book-form-heading");
 
-const deleteModal = document.getElementById("delete-modal");
-const deleteMessage = document.getElementById("delete-message");
+// ========================================
+// NOTIFICAÇÃO DE SUCESSO
+// ========================================
 
-const cancelDeleteButton = document.getElementById("cancel-delete");
-const confirmDeleteButton = document.getElementById("confirm-delete");
+const successModal =
+    document.getElementById("success-modal");
+
+const successMessage =
+    document.getElementById("success-message");
+
+const successButton =
+    document.getElementById("success-button");
+
+function showSuccess(message) {
+    successMessage.textContent = message;
+
+    successModal.classList.add("active");
+}
+
+successButton.addEventListener("click", () => {
+    successModal.classList.remove("active");
+});
+
+// ========================================
+// ELEMENTOS DO MODAL DE EXCLUSÃO
+// ========================================
+
+const deleteModal =
+    document.getElementById("delete-modal");
+
+const deleteMessage =
+    document.getElementById("delete-message");
+
+const cancelDeleteButton =
+    document.getElementById("cancel-delete");
+
+const confirmDeleteButton =
+    document.getElementById("confirm-delete");
 
 let bookToDelete = null;
 
-const newThemeInput = document.getElementById("new-theme");
-const addThemeButton = document.getElementById("add-theme-button");
-const themeError = document.getElementById("theme-error");
+// ========================================
+// CONFIRMAÇÃO DE EXCLUSÃO
+// ========================================
 
-const firstReadingSection = document.getElementById("first-reading-section");
-const addFirstReading = document.getElementById("add-first-reading");
-const firstReadingFields = document.getElementById("first-reading-fields");
+function showDeleteConfirmation(book, readingsCount) {
+    bookToDelete = book;
 
-const firstStatus = document.getElementById("first-status");
-const firstYear = document.getElementById("first-year");
-const firstGrade = document.getElementById("first-grade");
-const firstPriority = document.getElementById("first-priority");
-const firstRecommended = document.getElementById("first-recommended");
-const firstNotes = document.getElementById("first-notes");
+    deleteMessage.textContent =
+        MESSAGES.ui.confirmDeleteBook(book.title, readingsCount);
+
+    deleteModal.classList.add("active");
+}
+
+function closeDeleteConfirmation() {
+    bookToDelete = null;
+
+    deleteModal.classList.remove("active");
+}
+
+cancelDeleteButton.addEventListener(
+    "click",
+    closeDeleteConfirmation
+);
+
+deleteModal.addEventListener("click", event => {
+    if (event.target === deleteModal) {
+        closeDeleteConfirmation();
+    }
+});
+
+confirmDeleteButton.addEventListener("click", async () => {
+    if (!bookToDelete) return;
+
+    const book = bookToDelete;
+
+    confirmDeleteButton.disabled = true;
+
+    try {
+        await deleteBook(book.id);
+
+        closeDeleteConfirmation();
+
+        // Limpa o formulário caso o livro excluído
+        // esteja sendo editado.
+        if (idInput.value === String(book.id)) {
+            resetForm();
+        }
+
+        await renderBooks();
+
+        showSuccess(MESSAGES.ui.bookDeleted);
+
+    } catch (error) {
+        closeDeleteConfirmation();
+
+        alert(
+            error.message ||
+            MESSAGES.ui.bookDeleteFailed
+        );
+
+    } finally {
+        confirmDeleteButton.disabled = false;
+    }
+});
+
+// ========================================
+// ELEMENTOS DOS TEMAS
+// ========================================
+
+const newThemeInput =
+    document.getElementById("new-theme");
+
+const addThemeButton =
+    document.getElementById("add-theme-button");
+
+const themeError =
+    document.getElementById("theme-error");
+
+// ========================================
+// ELEMENTOS DA PRIMEIRA LEITURA
+// ========================================
+
+const firstReadingSection =
+    document.getElementById("first-reading-section");
+
+const addFirstReading =
+    document.getElementById("add-first-reading");
+
+const firstReadingFields =
+    document.getElementById("first-reading-fields");
+
+const firstStatus =
+    document.getElementById("first-status");
+
+const firstYear =
+    document.getElementById("first-year");
+
+const firstGrade =
+    document.getElementById("first-grade");
+
+const firstPriority =
+    document.getElementById("first-priority");
+
+const firstRecommended =
+    document.getElementById("first-recommended");
+
+const firstNotes =
+    document.getElementById("first-notes");
+
+// ========================================
+// MENSAGENS DE ERRO
+// ========================================
 
 const bookErrorIds = {
     title: "title-error",
@@ -71,101 +206,6 @@ const bookErrorIds = {
     grade: "first-grade-error",
     priority: "first-priority-error"
 };
-
-let previousFirstStatus = "Want to read";
-
-
-
-// MOSTRA UMA MENSAGEM DE SUCESSO
-
-function showSuccess(message) {
-    successMessage.textContent = message;
-
-    successModal.style.display = "flex";
-}
-
-successButton.addEventListener("click", () => {
-    successModal.style.display = "none";
-});
-
-
-
-// CONFIRMA SE QUER EXCLUIR O LIVRO
-
-function showDeleteConfirmation(book, readingsCount) {
-    bookToDelete = book;
-
-    deleteMessage.textContent =
-        `Are you sure you want to delete "${book.title}"? ` +
-        `This will also delete ${readingsCount} associated reading(s). ` +
-        "This action cannot be undone.";
-
-    deleteModal.classList.add("active");
-}
-
-
-
-// FECHA O MODAL DE EXCLUSÃO
-
-function closeDeleteConfirmation() {
-    bookToDelete = null;
-
-    deleteModal.classList.remove("active");
-}
-
-
-cancelDeleteButton.addEventListener(
-    "click",
-    closeDeleteConfirmation
-);
-
-deleteModal.addEventListener("click", event => {
-    if (event.target === deleteModal) {
-        closeDeleteConfirmation();
-    }
-});
-
-
-
-// CONFIRMA A EXCLUSÃO DO LIVRO
-
-confirmDeleteButton.addEventListener("click", async () => {
-    if (!bookToDelete) return;
-
-    const book = bookToDelete;
-
-    confirmDeleteButton.disabled = true;
-
-    try {
-        await deleteBook(book.id);
-
-        closeDeleteConfirmation();
-
-        // Limpa o formulário caso o livro excluído esteja sendo editado
-        if (idInput.value === String(book.id)) {
-            resetForm();
-        }
-
-        await renderBooks();
-
-        showSuccess("Book deleted successfully!");
-
-    } catch (error) {
-        closeDeleteConfirmation();
-
-        alert(
-            error.message ||
-            "Could not delete book."
-        );
-
-    } finally {
-        confirmDeleteButton.disabled = false;
-    }
-});
-
-
-
-// MOSTRA AS MENSAGENS DE ERRO
 
 function clearBookErrors() {
     Object.values(bookErrorIds).forEach(id => {
@@ -203,13 +243,14 @@ function showBookErrors(errors) {
     }
 }
 
-
-
-// CARREGA OS AUTORES EM ORDEM ALFABÉTICA
+// ========================================
+// CARREGAR AUTORES
+// ========================================
 
 async function loadAuthors() {
     const authors = await getAuthors();
 
+    // Ordena os autores alfabeticamente pelo nome.
     const sortedAuthors = [...authors].sort((a, b) =>
         a.name.localeCompare(b.name, "en", {
             sensitivity: "base"
@@ -228,9 +269,7 @@ async function loadAuthors() {
     });
 }
 
-
-
-// PESQUISA OS AUTORES
+// PESQUISAR AUTORES
 
 authorSearch.addEventListener("input", () => {
     const search = authorSearch.value.toLowerCase().trim();
@@ -242,9 +281,9 @@ authorSearch.addEventListener("input", () => {
     });
 });
 
-
-
-// CARREGA OS TEMAS
+// ========================================
+// CARREGAR TEMAS
+// ========================================
 
 async function loadThemes(selectedIds = []) {
     const themes = await getThemes();
@@ -265,9 +304,9 @@ async function loadThemes(selectedIds = []) {
     });
 }
 
-
-
-// CADASTRA UM NOVO TEMA
+// ========================================
+// CRIAR NOVO TEMA
+// ========================================
 
 addThemeButton.addEventListener("click", async () => {
     themeError.textContent = "";
@@ -292,13 +331,15 @@ addThemeButton.addEventListener("click", async () => {
         themeError.textContent =
             error.errors?.[0]?.message ||
             error.message ||
-            "Could not create theme.";
+            MESSAGES.ui.themeCreateFailed;
     }
 });
 
+// ========================================
+// CONTROLE DA PRIMEIRA LEITURA
+// ========================================
 
-
-// ATUALIZA OS CAMPOS DA PRIMEIRA LEITURA DE ACORDO COM O STATUS
+let previousFirstStatus = "Want to read";
 
 function updateFirstReadingFields() {
     const enabled = addFirstReading.checked;
@@ -321,9 +362,9 @@ function updateFirstReadingFields() {
         !enabled || status !== "Want to read";
 }
 
-
-
-// CONFIRMA A MUDANÇA DE STATUS DA PRIMEIRA LEITURA
+// ========================================
+// CONFIRMAÇÃO DE MUDANÇA DE STATUS
+// ========================================
 
 function handleFirstStatusChange() {
     const newStatus = firstStatus.value;
@@ -350,8 +391,7 @@ function handleFirstStatusChange() {
         willLosePriority
     ) {
         const confirmed = confirm(
-            "Changing the status will clear some fields. " +
-            "Do you want to continue?"
+            MESSAGES.ui.statusClearsFields
         );
 
         if (!confirmed) {
@@ -376,9 +416,9 @@ function handleFirstStatusChange() {
     clearBookErrors();
 }
 
-
-
-// CONTROLA OS EVENTOS DA PRIMEIRA LEITURA
+// ========================================
+// EVENTOS DA PRIMEIRA LEITURA
+// ========================================
 
 addFirstReading.addEventListener(
     "change",
@@ -390,9 +430,9 @@ firstStatus.addEventListener(
     handleFirstStatusChange
 );
 
-
-
-// COLETA OS DADOS DA PRIMEIRA LEITURA
+// ========================================
+// COLETAR DADOS DA PRIMEIRA LEITURA
+// ========================================
 
 function collectFirstReading() {
     if (!addFirstReading.checked) {
@@ -423,9 +463,9 @@ function collectFirstReading() {
     };
 }
 
-
-
-// LIMPA OS DADOS DO FORMULÁRIO
+// ========================================
+// LIMPAR FORMULÁRIO
+// ========================================
 
 function resetForm() {
     form.reset();
@@ -448,9 +488,9 @@ function resetForm() {
     updateFirstReadingFields();
 }
 
-
-
-// PREENCHE O FORMULÁRIO PARA EDITAR UM LIVRO
+// ========================================
+// EDITAR LIVRO
+// ========================================
 
 function editBook(book) {
     clearBookErrors();
@@ -512,9 +552,9 @@ function editBook(book) {
     titleInput.focus();
 }
 
-
-
-// EXIBE A LISTA DE LIVROS CADASTRADOS
+// ========================================
+// MOSTRAR LIVROS CADASTRADOS
+// ========================================
 
 async function renderBooks() {
     const books = await getBooks();
@@ -548,8 +588,8 @@ async function renderBooks() {
         const message = document.createElement("p");
 
         message.textContent = search
-            ? "No books found."
-            : "No books registered yet.";
+            ? MESSAGES.ui.booksNotFound
+            : MESSAGES.ui.booksEmpty;
 
         booksList.appendChild(message);
 
@@ -561,10 +601,11 @@ async function renderBooks() {
 
         item.className = "book-item";
 
-        // Informações do livro
-        const information = document.createElement("div");
+        const information =
+            document.createElement("div");
 
         const title = document.createElement("strong");
+
         title.textContent = book.title;
 
         const year = document.createElement("p");
@@ -583,7 +624,8 @@ async function renderBooks() {
             })
             .filter(Boolean);
 
-        const authorText = document.createElement("p");
+        const authorText =
+            document.createElement("p");
 
         authorText.textContent =
             "Authors: " +
@@ -603,7 +645,8 @@ async function renderBooks() {
             })
             .filter(Boolean);
 
-        const themeText = document.createElement("p");
+        const themeText =
+            document.createElement("p");
 
         themeText.textContent =
             "Themes: " +
@@ -620,12 +663,14 @@ async function renderBooks() {
             themeText
         );
 
-        // Botões de ação
-        const actions = document.createElement("div");
+        const actions =
+            document.createElement("div");
+
         actions.className = "book-actions";
 
-        // Botão "Edit"
-        const editButton = document.createElement("button");
+        // Botão Edit
+        const editButton =
+            document.createElement("button");
 
         editButton.type = "button";
         editButton.className = "edit-button";
@@ -637,8 +682,9 @@ async function renderBooks() {
             editBook(book);
         });
 
-        // Botão "Delete"
-        const deleteButton = document.createElement("button");
+        // Botão Delete
+        const deleteButton =
+            document.createElement("button");
 
         deleteButton.type = "button";
         deleteButton.className = "delete-button";
@@ -660,7 +706,7 @@ async function renderBooks() {
             } catch (error) {
                 alert(
                     error.message ||
-                    "Could not prepare book deletion."
+                    MESSAGES.ui.bookDeletePrepareFailed
                 );
             }
         });
@@ -679,15 +725,15 @@ async function renderBooks() {
     });
 }
 
-
-
-// PESQUISA OS LIVROS
+// ========================================
+// ATUALIZAR A LISTA ENQUANTO DIGITA
+// ========================================
 
 bookSearch.addEventListener("input", renderBooks);
 
-
-
-// COLETA OS DADOS DO LIVRO
+// ========================================
+// COLETAR DADOS DO LIVRO
+// ========================================
 
 function collectBook() {
     const selectedAuthors = Array.from(
@@ -721,9 +767,9 @@ function collectBook() {
     };
 }
 
-
-
-// SALVA OU ATUALIZA O LIVRO
+// ========================================
+// SALVAR LIVRO
+// ========================================
 
 form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -762,9 +808,9 @@ form.addEventListener("submit", async event => {
         await renderBooks();
 
         if (isNewBook) {
-            showSuccess("Book registered successfully!");
+            showSuccess(MESSAGES.ui.bookSaved);
         } else {
-            showSuccess("Book updated successfully!");
+            showSuccess(MESSAGES.ui.bookUpdated);
         }
 
     } catch (error) {
@@ -774,24 +820,24 @@ form.addEventListener("submit", async event => {
         } else {
             alert(
                 error.message ||
-                "Could not save book."
+                MESSAGES.ui.bookSaveFailed
             );
         }
     }
 });
 
-
-
-// CANCELAR A EDIÇÃO
+// ========================================
+// CANCELAR EDIÇÃO
+// ========================================
 
 cancelButton.addEventListener(
     "click",
     resetForm
 );
 
-
-
-// INICIA A PÁGINA
+// ========================================
+// INICIAR A PÁGINA
+// ========================================
 
 async function start() {
     try {
@@ -813,7 +859,7 @@ async function start() {
             error
         );
 
-        alert("Could not load book data.");
+        alert(MESSAGES.ui.booksLoadFailed);
     }
 }
 

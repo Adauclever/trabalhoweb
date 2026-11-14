@@ -1,3 +1,4 @@
+import { MESSAGES } from "./messages.js";
 import {
     initializeStore,
     getBooks,
@@ -27,6 +28,7 @@ const successModal = document.getElementById("success-modal");
 const successMessage = document.getElementById("success-message");
 const successButton = document.getElementById("success-button");
 
+// Modal de exclusão
 const deleteModal = document.getElementById("delete-modal");
 const deleteMessage = document.getElementById("delete-message");
 const cancelDeleteButton = document.getElementById("cancel-delete");
@@ -42,6 +44,11 @@ let previousStatus = "Want to read";
 
 let readingToDelete = null;
 
+
+// ========================================
+// MENSAGENS DE ERRO
+// ========================================
+
 const errorIds = {
     bookId: "book-error",
     status: "status-error",
@@ -51,10 +58,6 @@ const errorIds = {
     recommendedBy: "recommended-error",
     notes: "notes-error"
 };
-
-
-
-// MOSTRA AS MENSAGENS DE ERRO
 
 function clearErrors() {
     Object.values(errorIds).forEach(id => {
@@ -85,28 +88,23 @@ function showErrors(errors) {
 }
 
 
-
-// CONFIRMA SE QUER EXCLUIR A LEITURA
+// ========================================
+// MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
+// ========================================
 
 function showDeleteConfirmation(reading, book) {
     readingToDelete = reading;
 
     deleteMessage.textContent =
-        `Are you sure you want to delete the reading of "${book?.title ?? "this book"}"? ` +
-        "This action cannot be undone.";
+        MESSAGES.ui.confirmDeleteReading(book?.title ?? "this book");
 
     deleteModal.classList.add("active");
 }
-
-
-
-// FECHA O MODAL DE EXCLUSÃO
 
 function closeDeleteConfirmation() {
     readingToDelete = null;
     deleteModal.classList.remove("active");
 }
-
 
 cancelDeleteButton.addEventListener("click", () => {
     closeDeleteConfirmation();
@@ -117,10 +115,6 @@ deleteModal.addEventListener("click", event => {
         closeDeleteConfirmation();
     }
 });
-
-
-
-// CONFIRMA A EXCLUSÃO DA LEITURA
 
 confirmDeleteButton.addEventListener("click", async () => {
     if (!readingToDelete) {
@@ -144,7 +138,7 @@ confirmDeleteButton.addEventListener("click", async () => {
 
         renderReadings();
 
-        showSuccess("Reading deleted successfully!");
+        showSuccess(MESSAGES.ui.readingDeleted);
 
     } catch (error) {
         console.error("Error deleting reading:", error);
@@ -153,7 +147,7 @@ confirmDeleteButton.addEventListener("click", async () => {
 
         alert(
             error.message ||
-            "Could not delete reading."
+            MESSAGES.ui.readingDeleteFailed
         );
 
     } finally {
@@ -162,8 +156,9 @@ confirmDeleteButton.addEventListener("click", async () => {
 });
 
 
-
-// EXIBE UMA MENSAGEM DE SUCESSO
+// ========================================
+// MENSAGEM DE SUCESSO
+// ========================================
 
 function showSuccess(message) {
     successMessage.textContent = message;
@@ -175,8 +170,9 @@ successButton.addEventListener("click", () => {
 });
 
 
-
-// ATUALIZA OS CAMPOS DE ACORDO COM O STATUS DA LEITURA
+// ========================================
+// CONTROLAR CAMPOS POR STATUS
+// ========================================
 
 function updateFields() {
     const status = statusSelect.value;
@@ -194,10 +190,6 @@ function updateFields() {
     prioritySelect.disabled =
         status !== "Want to read";
 }
-
-
-
-// CONFIRMA A MUDANÇA DE STATUS DA LEITURA
 
 function handleStatusChange() {
     const newStatus = statusSelect.value;
@@ -220,8 +212,7 @@ function handleStatusChange() {
 
     if (willLoseYear || willLoseGrade || willLosePriority) {
         const confirmed = window.confirm(
-            "Changing the status will clear some fields. " +
-            "Do you want to continue?"
+            MESSAGES.ui.statusClearsFields
         );
 
         if (!confirmed) {
@@ -246,18 +237,19 @@ function handleStatusChange() {
     clearErrors();
 }
 
-
 statusSelect.addEventListener("change", handleStatusChange);
 
 
-
-// CARREGA OS DADOS DOS LIVROS, AUTORES E LEITURAS
+// ========================================
+// CARREGAR DADOS
+// ========================================
 
 async function loadData() {
     books = await getBooks();
     authors = await getAuthors();
     readings = await getReadings();
 
+    // Ordena os livros alfabeticamente pelo título.
     const sortedBooks = [...books].sort((a, b) =>
         a.title.localeCompare(b.title, "en", {
             sensitivity: "base"
@@ -265,7 +257,7 @@ async function loadData() {
     );
 
     bookSelect.replaceChildren(
-        new Option("Select a book", "")
+        new Option(MESSAGES.ui.selectBookOption, "")
     );
 
     sortedBooks.forEach(book => {
@@ -274,10 +266,6 @@ async function loadData() {
         );
     });
 }
-
-
-
-// BUSCA OS NOMES DOS AUTORES DE UM LIVRO
 
 function getAuthorNames(book) {
     const names = (book?.authorIds ?? [])
@@ -292,8 +280,9 @@ function getAuthorNames(book) {
 }
 
 
-
-// LIMPA OS DADOS DO FORMULÁRIO
+// ========================================
+// LIMPAR FORMULÁRIO
+// ========================================
 
 function resetForm() {
     form.reset();
@@ -310,8 +299,9 @@ function resetForm() {
 }
 
 
-
-// PREENCHE O FORMULÁRIO PARA EDITAR UMA LEITURA
+// ========================================
+// EDITAR LEITURA
+// ========================================
 
 function editReading(reading) {
     idInput.value = reading.id;
@@ -341,8 +331,9 @@ function editReading(reading) {
 }
 
 
-
-// COMPARA OS VALORES PARA ORGANIZAR A LISTA
+// ========================================
+// ORDENAÇÃO
+// ========================================
 
 function compareValues(a, b) {
     const missingA =
@@ -368,10 +359,6 @@ function compareValues(a, b) {
     return sortAscending ? result : -result;
 }
 
-
-
-// DEFINE O VALOR UTILIZADO NA ORDENAÇÃO
-
 function getSortValue(reading, book) {
     if (sortField === "title") {
         return book?.title ?? null;
@@ -385,8 +372,9 @@ function getSortValue(reading, book) {
 }
 
 
-
-// EXIBE A LISTA DE LEITURAS CADASTRADAS
+// ========================================
+// EXIBIR LEITURAS E PESQUISAR
+// ========================================
 
 function renderReadings() {
     list.replaceChildren();
@@ -431,8 +419,8 @@ function renderReadings() {
         cell.colSpan = 6;
 
         cell.textContent = search
-            ? "No readings found."
-            : "No readings registered yet.";
+            ? MESSAGES.ui.readingsNotFound
+            : MESSAGES.ui.readingsEmpty;
 
         row.appendChild(cell);
         list.appendChild(row);
@@ -464,7 +452,7 @@ function renderReadings() {
         const actionsCell = document.createElement("td");
         actionsCell.classList.add("reading-actions");
 
-        // Botão "Edit"
+        // BOTÃO EDIT
         const editButton = document.createElement("button");
         editButton.type = "button";
         editButton.classList.add("edit-button");
@@ -475,7 +463,7 @@ function renderReadings() {
             editReading(reading);
         });
 
-        // Botão "Delete"
+        // BOTÃO DELETE COM MODAL PERSONALIZADO
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.classList.add("delete-button");
@@ -494,15 +482,12 @@ function renderReadings() {
     });
 }
 
-
-
-// PESQUISA AS LEITURAS
-
 readingSearch.addEventListener("input", renderReadings);
 
 
-
-// CONTROLA A ORDENAÇÃO DAS LEITURAS
+// ========================================
+// BOTÕES DE ORDENAÇÃO
+// ========================================
 
 document.querySelectorAll("[data-sort]").forEach(button => {
     button.addEventListener("click", () => {
@@ -520,8 +505,9 @@ document.querySelectorAll("[data-sort]").forEach(button => {
 });
 
 
-
-// SALVA OU ATUALIZA A LEITURA
+// ========================================
+// SALVAR LEITURA
+// ========================================
 
 form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -577,9 +563,9 @@ form.addEventListener("submit", async event => {
         renderReadings();
 
         if (isEditing) {
-            showSuccess("Reading updated successfully!");
+            showSuccess(MESSAGES.ui.readingUpdated);
         } else {
-            showSuccess("Reading registered successfully!");
+            showSuccess(MESSAGES.ui.readingSaved);
         }
 
     } catch (error) {
@@ -590,21 +576,23 @@ form.addEventListener("submit", async event => {
 
             alert(
                 error.message ||
-                "Could not save reading."
+                MESSAGES.ui.readingSaveFailed
             );
         }
     }
 });
 
 
-
-// CANCELAR A EDIÇÃO
+// ========================================
+// CANCELAR EDIÇÃO
+// ========================================
 
 cancelButton.addEventListener("click", resetForm);
 
 
-
-// INICIA A PÁGINA
+// ========================================
+// INICIAR PÁGINA
+// ========================================
 
 async function start() {
     try {
@@ -620,7 +608,7 @@ async function start() {
     } catch (error) {
         console.error("Could not initialize Reading Log:", error);
 
-        alert("Could not load reading data.");
+        alert(MESSAGES.ui.readingsLoadFailed);
     }
 }
 
