@@ -16,9 +16,8 @@ A interface e os valores controlados (formas, modos, status, prioridades) estão
 | Nome | Matrícula |
 |---|---|
 | Adauclever Pacheco Lino | 2025.1.08.001 |
-| Danilo Carvalho Firme | 2025.1.08.0 |
+| Danilo Carvalho Firme | 2025.1.08.038 |
 | Gabriella Caproni | 2025.1.08.008 |
-| Giovanne Cabral | 2026.1.08.0 |
 | Guilherme Pereira Falcucci| 2025.1.08.027 |
 
 
