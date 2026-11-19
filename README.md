@@ -4,7 +4,7 @@ Aplicação web que substitui um registro de leituras feito em um documento Word
 
 A interface e os valores controlados (formas, modos, status, prioridades) estão em inglês dos EUA. Títulos de livros e nomes de autores ficam como foram registrados, no idioma original.
 
-- Repositório: https://github.com/GabiCaproni/trabalhoweb
+- Repositório: https://github.com/Adauclever/trabalhoweb
 - Tag da entrega: `delivery-1`
 
 ---
@@ -29,7 +29,7 @@ A interface e os valores controlados (formas, modos, status, prioridades) estão
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/GabiCaproni/trabalhoweb.git
+   git clone https://github.com/Adauclever/trabalhoweb.git
    cd trabalhoweb
    ```
 2. Abra a pasta no VS Code.
