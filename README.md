@@ -196,7 +196,8 @@ Esta seção explica o que cada ferramenta faz, para quem for entender ou aprese
 
 | Ferramenta | Usada para | Partes afetadas |
 |---|---|---|
-| ChatGPT | As ferramentas foram utilizadas para auxiliar na compreensão de conceitos de desenvolvimento web, esclarecer dúvidas sobre HTML, CSS e JavaScript, identificar possíveis problemas no código, sugerir melhorias na organização e na implementação das funcionalidades e auxiliar na documentação do projeto. As sugestões foram analisadas e adaptadas ao longo do desenvolvimento, com testes realizados para verificar o funcionamento das funcionalidades implementadas.|
+| ChatGPT | As ferramentas foram utilizadas para auxiliar na compreensão de conceitos de desenvolvimento web, esclarecer dúvidas sobre HTML, CSS e JavaScript, identificar possíveis problemas no código, sugerir melhorias na organização e na implementação das funcionalidades e auxiliar na documentação do projeto. As sugestões foram analisadas e adaptadas ao longo do desenvolvimento, com testes realizados para verificar o funcionamento das funcionalidades implementadas. | Frontend em HTML, CSS e JavaScript (orientação e revisão de funcionalidades) e documentação do projeto (`README.md`). |
+| Codex | Atualização dos links do repositório e revisão da declaração de uso de IA para a Entrega 1. | `README.md` |
 | Claude | Revisão do código contra os requisitos da Entrega 1; correção da validação de anos a.C.; padronização dos erros 404 e 409 no formato da API; criação do `messages.js`; troca de `style.display` por `classList`; remoção de regra CSS duplicada; apoio na escrita deste README. | `js/validation.js`, `js/store.js`, `js/authors.js`, `js/books.js`, `js/readings.js`, `js/home.js`, `js/messages.js`, `style.css`, `README.md` |
 
 As sugestões das ferramentas foram analisadas e testadas. Todos os integrantes devem ser capazes de explicar o código entregue.
